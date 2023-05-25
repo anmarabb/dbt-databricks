@@ -104,8 +104,10 @@ WITH
           --  regexp_extract(permalink, r'/([^/]+)') as product_crop,
            -- regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
            -- regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory
-           from floranow_dev.erp_prod.line_items as li
- as li
+           --from floranow_dev.erp_prod.line_items as li
+           
+           from {{ source('erp_prod', 'line_items') }}
+
         
     )
 
