@@ -1,5 +1,5 @@
 
-name: 'dbt-databricks'
+name: 'floranow'
 version: '1.0.0'
 config-version: 2
 
@@ -25,7 +25,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  dbt-databricks:
+  floranow:
     # Applies to all files under models/example/
     1_staging:
       +enabled: true
