@@ -36,7 +36,7 @@ models:
         +enabled: true
         +materialized: table
         +schema: int
-b
+
     3_warehouse:
       +enabled: true
       +materialized: table
