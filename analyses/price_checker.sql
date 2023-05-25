@@ -33,7 +33,11 @@ case when li.unit_price * li.quantity = total_price_without_tax then 'ok' else '
 
 
 case when li.quantity * li.unit_price != total_price_without_tax then 'price_flag_1' else null end as price_checker,
-from `floranow.erp_prod.line_items` as li
+
+
+
+from `floranow_dev.erp_prod.line_items` as li
+
 
 where li.quantity * li.unit_price != total_price_without_tax
 order by 2
