@@ -101,12 +101,12 @@ WITH
             li.warehoused_quantity,
             li.published_canceled_quantity
             -- (Keep the same case logic here as in your original query)
-          --  regexp_extract(permalink, r'/([^/]+)') as product_crop,
+          -- regexp_extract(permalink, r'/([^/]+)') as product_crop,
            -- regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
            -- regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory
            --from floranow_dev.erp_prod.line_items as li
            
-           from {{ source('erp_prod', 'line_items') }}
+           from {{ source('erp_prod', 'line_items') }} as li
 
         
     )
