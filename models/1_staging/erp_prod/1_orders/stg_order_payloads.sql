@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'order_payloads') }}
+ select * from {{ source('1_source', 'order_payloads') }}
 )
 select 
 id as order_payload_id,
