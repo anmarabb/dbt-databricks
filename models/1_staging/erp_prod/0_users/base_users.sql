@@ -1,7 +1,7 @@
 
 with
-  prep_countryas as (select distinct country_iso_code as code, country_name from `floranow.erp_prod.country`),
-  base_manageable_accounts_user as (select account_manager_id, manageable_id, from `floranow.erp_prod.manageable_accounts` where manageable_type = 'User')
+  prep_countryas as (select distinct country_iso_code as code, country_name from {{ source('1_source', 'country') }}),
+  base_manageable_accounts_user as (select account_manager_id, manageable_id from {{ source('1_source', 'manageable_accounts') }} where manageable_type = 'User')
 
 
 select
@@ -41,7 +41,7 @@ when u.company_id = 1 then 'Flora Express Flower Trading LLC'
 else  'cheack'
 end as company_name,
   
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
 
   from {{ source('1_source', 'users') }} as u
   left join prep_countryas as c on u.country = c.code
