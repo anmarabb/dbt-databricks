@@ -27,16 +27,16 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   floranow:
     # Applies to all files under models/example/
-    1_staging:
+    1_bronze:
       +enabled: true
       +materialized: view
-      +schema: 2_stage
+      +schema: "{{ env_var('DBT_BRONZE') }}"
        
 
-    2_mart:
+    2_silver:
       +enabled: true
       +materialized: table
-      +schema: 3_mart
+      +schema:  "{{ env_var('DBT_SILVER') }}"
       dim_date:
         +materialized: view
 
