@@ -1,6 +1,6 @@
 
 With source as (
- select * from {{ source('erp_prod', 'warehouses') }}
+ select * from {{ source('1_source', 'warehouses') }}
 )
 select 
 
@@ -20,7 +20,7 @@ w.deleted_at,
 
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

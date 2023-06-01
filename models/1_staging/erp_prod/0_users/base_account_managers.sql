@@ -1,28 +1,13 @@
-With source as (
-
-
-select 
-
-a.account_manager_type,
-u.name as account_manager,
-f.name as fin_market,
-
-from {{ source('erp_prod', 'account_managers') }} as a
-left join {{ source('erp_prod', 'users') }} as u on a.user_id = u.id
-left join {{ source('erp_prod', 'financial_administrations') }} as f on f.id = u.financial_administration_id
-
-
-
+WITH source AS (
+  SELECT 
+    a.account_manager_type,
+    u.name AS account_manager,
+    f.name AS fin_market
+  FROM {{ source('1_source', 'account_managers') }} AS a
+  LEFT JOIN {{ source('1_source', 'users') }} AS u ON a.user_id = u.id
+  LEFT JOIN {{ source('1_source', 'financial_administrations') }} AS f ON f.id = u.financial_administration_id
 )
-select 
-
-*,
-
-current_timestamp() as ingestion_timestamp,
-
- 
-
-
-
-
-from source as ii
+SELECT 
+  *,
+  current_timestamp() AS ingestion_timestamp
+FROM source AS ii

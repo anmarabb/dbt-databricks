@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'proof_of_deliveries') }}
+ select * from {{ source('1_source', 'proof_of_deliveries') }}
 )
 select 
 
@@ -8,7 +8,7 @@ select
             --FK
             route_id,
             dispatched_by_id,
-            invoices_ids,
+            --invoices_ids,
             customer_id,
             skipped_by_id,
             split_by_id,
@@ -35,7 +35,7 @@ select
 
 
                 summary,
-                creation_condition,
+                --creation_condition,
                 source_type,
                 number,
                 barcode,
@@ -59,10 +59,10 @@ select
             REGEXP_REPLACE(REPLACE(SPLIT(invoices_ids, ',')[SAFE_ORDINAL(5)], '{', ''), '}', '') AS value5,
 */
 
-  CASE
-    WHEN invoices_ids = '{}' THEN 0
-    ELSE ARRAY_LENGTH(SPLIT(REPLACE(REPLACE(invoices_ids, '{', ''), '}', ''), ','))
-  END AS ids_count,
+  --CASE
+  --  WHEN invoices_ids = '{}' THEN 0
+  --  ELSE SIZE(SPLIT(REPLACE(REPLACE(invoices_ids, '{', ''), '}', ''), ','))
+ -- END AS ids_count,
 
 
 
@@ -71,7 +71,7 @@ select
 
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

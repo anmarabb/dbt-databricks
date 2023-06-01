@@ -1,11 +1,11 @@
 With source as (
- select * from {{ source('erp_prod', 'packing_box_items') }}
+ select * from {{ source('1_source', 'packing_box_items') }}
 )
 select 
 
 *,
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

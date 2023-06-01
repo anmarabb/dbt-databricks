@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'sections') }}
+ select * from {{ source('1_source', 'sections') }}
 )
 select 
 
@@ -10,6 +10,6 @@ checking_status,
 warehouse_checking_status,
 
 created_at,
-updated_at,
+updated_at
 
 from source 

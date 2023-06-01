@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'invoice_items') }}
+ select * from {{ source('1_source', 'invoice_items') }}
 )
 select 
             --PK
@@ -46,10 +46,9 @@ select
                 end as invoice_item_type,
 
                 --supplier
-                ii.meta_data.supplier as meta_supplier,
-                ii.meta_data.supplier_code as meta_supplier_code,
-                ii.meta_data.supplier_name as meta_supplier_name,
-
+                get_json_object(meta_data, '$.supplier_name') AS meta_supplier_name,
+                get_json_object(meta_data, '$.supplier_code') AS meta_supplier_code,
+                get_json_object(meta_data, '$.supplier') AS meta_supplier,
             --fct
                 ii.quantity,
                 ii.unit_price,
@@ -75,7 +74,7 @@ select
 
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
 
 from source as ii
 where ii.deleted_at is null 

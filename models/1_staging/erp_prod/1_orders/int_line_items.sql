@@ -134,14 +134,14 @@ pod.pod_status,
 
 
 
+
 case 
-    when date_diff(date(li.delivery_date)  ,current_date(), month) > 1 then 'Wrong date' 
+    when months_between(current_date(), date(li.delivery_date)) > 1 then 'Wrong date' 
     when li.delivery_date > current_date() then "Future" 
     when li.delivery_date = current_date() then "Today" 
     when li.delivery_date < current_date() then "Past" 
-    else "cheak" end as select_delivery_date,
-
-
+    else "cheak" 
+end as select_delivery_date
 
 
 /*

@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'statement_of_accounts') }}
+ select * from {{ source('1_source', 'statement_of_accounts') }}
 )
 select 
             --PK
@@ -38,6 +38,6 @@ select
             
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
 
 from source

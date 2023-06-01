@@ -9,7 +9,7 @@ proof_of_delivery_id,
 order_date,
 delivery_date,
 source_type,
-ids_count,
+--ids_count,
 pod_status,
 
 Customer,
@@ -35,16 +35,16 @@ item_count,
 
 
 
-    case 
-    when date_diff(date(delivery_date)  ,current_date(), month) > 1 then 'Wrong date' 
-    when delivery_date > current_date() then "Future" 
-    when delivery_date = current_date() then "Today" 
-    when delivery_date < current_date()-1 then "Past" 
+  CASE
+    WHEN months_between(to_date(delivery_date), current_date()) > 1 THEN 'Wrong date'
+    WHEN to_date(delivery_date) > current_date() THEN 'Future'
+    WHEN to_date(delivery_date) = current_date() THEN 'Today'
+    WHEN to_date(delivery_date) < current_date() - INTERVAL 1 DAY THEN 'Past'
+    ELSE 'Past'
+  END AS select_delivery_date,
 
-    else "Past" end as select_delivery_date,
 
-
-    current_timestamp() as insertion_timestamp, 
+    current_timestamp() as insertion_timestamp
 
 from {{ ref('int_proof_of_deliveries')}} as pod
 

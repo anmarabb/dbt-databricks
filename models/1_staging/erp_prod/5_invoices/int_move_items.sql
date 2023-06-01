@@ -26,13 +26,13 @@ customer.user_category,
     -(moi.balance - moi.residual) as reconciled_amount,
     -moi.residual as un_reconciled_amount,
 
-    current_timestamp() as insertion_timestamp, 
+    current_timestamp() as insertion_timestamp
 
 from {{ ref('stg_move_items')}} as moi
 left join {{ ref('base_users') }} as customer on customer.id = moi.user_id
 left join {{ ref('stg_payment_transactions') }} as pt on pt.payment_transaction_id = moi.documentable_id and moi.documentable_type = 'PaymentTransaction'
-left join {{ source('erp_prod', 'financial_administrations') }} as fn on fn.id = pt.financial_administration_id
-left join {{ source('erp_prod', 'bank_accounts') }} as ba on pt.bank_account_id = ba.id
+left join {{ source('1_source', 'financial_administrations') }} as fn on fn.id = pt.financial_administration_id
+left join {{ source('1_source', 'bank_accounts') }} as ba on pt.bank_account_id = ba.id
 
 where documentable_type = 'PaymentTransaction' and entry_type = 'CREDIT'
 

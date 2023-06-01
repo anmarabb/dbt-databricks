@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'products') }}
+ select * from {{ source('1_source', 'products') }}
  where deleted_at is  null
 )
 select 
@@ -75,10 +75,10 @@ concat( "https://erp.floranow.com/products/", p.id) as product_link,
 
 
   --CONCAT('SKU_', LOWER(SUBSTR(MD5(product_name), 1, 8))) AS sku,
-    CONCAT('SKU_', LOWER(TO_HEX(MD5(product_name)))) AS sku,
+    --CONCAT('SKU_', LOWER(TO_HEX(MD5(product_name)))) AS sku,
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

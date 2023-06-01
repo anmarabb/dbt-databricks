@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'shipments') }}
+ select * from {{ source('1_source', 'shipments') }}
 )
 select 
 
@@ -68,7 +68,7 @@ select
     
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

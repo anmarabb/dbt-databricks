@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'product_locations') }}
+ select * from {{ source('1_source', 'product_locations') }}
 )
 select 
 
@@ -30,7 +30,7 @@ select
             remaining_quantity,
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

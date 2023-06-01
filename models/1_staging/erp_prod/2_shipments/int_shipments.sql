@@ -34,16 +34,17 @@ case when msh.arrival_at is null  then 'shipmnet_not_arrived' else 'shipmnet_arr
 
 
 
-case 
-    when date_diff(date(msh.arrival_date)  ,current_date(), month) > 1 then 'Wrong date' 
-    when date(msh.arrival_date) = current_date()+1 then "Tomorrow" 
-    when date(msh.arrival_date) > current_date() then "Future" 
-    when date(msh.arrival_date) = current_date()-1 then "Yesterday" 
-    when date(msh.arrival_date) = current_date() then "Today" 
-    when date_diff(cast(current_date() as date ),cast(msh.arrival_date as date), MONTH) = 0 then 'Month To Date'
-    when date_diff(cast(current_date() as date ),cast(msh.arrival_date as date), MONTH) = 1 then 'Last Month'
-    when date_diff(cast(current_date() as date ),cast(msh.arrival_date as date), YEAR) = 0 then 'Year To Date'
-    else "Past" end as select_arrival_date,
+CASE
+    WHEN months_between(to_date(msh.arrival_date), current_date()) > 1 THEN 'Wrong date'
+    WHEN to_date(msh.arrival_date) = current_date() + INTERVAL 1 DAY THEN 'Tomorrow'
+    WHEN to_date(msh.arrival_date) > current_date() THEN 'Future'
+    WHEN to_date(msh.arrival_date) = current_date() - INTERVAL 1 DAY THEN 'Yesterday'
+    WHEN to_date(msh.arrival_date) = current_date() THEN 'Today'
+    WHEN months_between(current_date(), to_date(msh.arrival_date)) = 0 THEN 'Month To Date'
+    WHEN months_between(current_date(), to_date(msh.arrival_date)) = 1 THEN 'Last Month'
+    WHEN year(current_date()) = year(to_date(msh.arrival_date)) THEN 'Year To Date'
+    ELSE 'Past'
+  END AS select_arrival_date
 
 
 
@@ -59,7 +60,7 @@ select
 
 *,
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

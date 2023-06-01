@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp_prod', 'feed_sources') }}
+ select * from {{ source('1_source', 'feed_sources') }}
 )
 select 
 
@@ -27,7 +27,7 @@ case
  
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
 
 
 

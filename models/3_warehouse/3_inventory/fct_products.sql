@@ -99,7 +99,7 @@ select
     full_incident_check,
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp 
 
 
 from {{ref('int_products')}} as p 

@@ -17,20 +17,63 @@ select
         --computing the total sales for the current month (month to date, MTD) and the corresponding month in the previous year
         --and calculating the sales for the "Last Month to Date" (LMTD), meaning the total price_without_tax value for all invoices that were printed on or before today's date in the previous month.
         -- MTD Vs. LMTD Vs. MTD (Last Y)
-            case when date_diff(date(i.invoice_header_printed_at) , current_date() , MONTH) = 0 then ii.price_without_tax else 0 end as MTD_sales,
-            case when EXTRACT(YEAR FROM date(i.invoice_header_printed_at)) = EXTRACT(YEAR FROM current_date()) - 1 AND EXTRACT(MONTH FROM date(i.invoice_header_printed_at)) = EXTRACT(MONTH FROM current_date()) then ii.price_without_tax else 0 end as MTD_sales_last_year,
-            case when date_diff(current_date(),date(i.invoice_header_printed_at), MONTH) = 1 and extract(day FROM i.invoice_header_printed_at) <= extract(day FROM current_date()) then ii.price_without_tax else 0 end as LMTD_sales,
+           -- case when date_diff(date(i.invoice_header_printed_at) , current_date() , MONTH) = 0 then ii.price_without_tax else 0 end as MTD_sales,
+CASE
+    WHEN CEIL(months_between(CURRENT_DATE(), i.invoice_header_printed_at)) = 0
+    THEN ii.price_without_tax
+    ELSE 0
+END AS MTD_sales,
 
+
+            case when EXTRACT(YEAR FROM date(i.invoice_header_printed_at)) = EXTRACT(YEAR FROM current_date()) - 1 AND EXTRACT(MONTH FROM date(i.invoice_header_printed_at)) = EXTRACT(MONTH FROM current_date()) then ii.price_without_tax else 0 end as MTD_sales_last_year,
+            
+            
+            --case when date_diff(current_date(),date(i.invoice_header_printed_at), MONTH) = 1 and extract(day FROM i.invoice_header_printed_at) <= extract(day FROM current_date()) then ii.price_without_tax else 0 end as LMTD_sales,
+
+CASE 
+    WHEN CEIL(months_between(CURRENT_DATE(), i.invoice_header_printed_at)) = 1
+         AND EXTRACT(DAY FROM i.invoice_header_printed_at) <= EXTRACT(DAY FROM CURRENT_DATE())
+    THEN ii.price_without_tax 
+    ELSE 0 
+END AS LMTD_sales,
 
 
             --calculating the sum of price_without_tax for invoice items printed in the last month and the corresponding month in the previous year
             -- M-1 Vs. M-1 (Last Y)
-                case when date_diff(current_date(),date(i.invoice_header_printed_at), MONTH) = 1 then ii.price_without_tax else 0 end as m_1_sales,
-                case when date_diff(current_date(),date(i.invoice_header_printed_at), YEAR) = 1 and extract(MONTH from date(i.invoice_header_printed_at)) = extract(MONTH from current_date()) - 1 then ii.price_without_tax else 0 end as m_1_sales_last_year,
+                --case when date_diff(current_date(),date(i.invoice_header_printed_at), MONTH) = 1 then ii.price_without_tax else 0 end as m_1_sales,
+CASE 
+    WHEN CEIL(months_between(CURRENT_DATE(), date(i.invoice_header_printed_at))) = 1
+    THEN ii.price_without_tax 
+    ELSE 0 
+END AS m_1_sales,
+
+
+                --case when date_diff(current_date(),date(i.invoice_header_printed_at), YEAR) = 1 and extract(MONTH from date(i.invoice_header_printed_at)) = extract(MONTH from current_date()) - 1 then ii.price_without_tax else 0 end as m_1_sales_last_year,
+CASE 
+    WHEN CEIL(months_between(CURRENT_DATE(), date(i.invoice_header_printed_at))) = 12
+        AND EXTRACT(MONTH FROM date(i.invoice_header_printed_at)) = EXTRACT(MONTH FROM CURRENT_DATE()) - 1
+    THEN ii.price_without_tax 
+    ELSE 0 
+END AS m_1_sales_last_year,
 
             --calculate the year-to-date sales and the last year's year-to-date sales.
-                case when date_diff(current_date(),date(i.invoice_header_printed_at), YEAR) = 0 then ii.price_without_tax else 0 end as YTD_sales,
-                case when EXTRACT(YEAR FROM i.invoice_header_printed_at) = EXTRACT(YEAR FROM DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)) and EXTRACT(DAYOFYEAR FROM i.invoice_header_printed_at) <= EXTRACT(DAYOFYEAR FROM CURRENT_DATE()) then ii.price_without_tax else 0 end as LYTD_sales,
+                --case when date_diff(current_date(),date(i.invoice_header_printed_at), YEAR) = 0 then ii.price_without_tax else 0 end as YTD_sales,
+CASE 
+    WHEN CEIL(months_between(current_date(), date(i.invoice_header_printed_at))) < 12 
+    THEN ii.price_without_tax 
+    ELSE 0 
+END AS YTD_sales,
+
+
+               -- case when EXTRACT(YEAR FROM i.invoice_header_printed_at) = EXTRACT(YEAR FROM DATE_SUB(CURRENT_DATE(), INTERVAL 1 YEAR)) and EXTRACT(DAYOFYEAR FROM i.invoice_header_printed_at) <= EXTRACT(DAYOFYEAR FROM CURRENT_DATE()) then ii.price_without_tax else 0 end as LYTD_sales,
+CASE 
+    WHEN YEAR(i.invoice_header_printed_at) = YEAR(DATE_SUB(CURRENT_DATE, 365)) 
+         AND DAYOFYEAR(i.invoice_header_printed_at) <= DAYOFYEAR(CURRENT_DATE) 
+    THEN ii.price_without_tax 
+    ELSE 0 
+END AS LYTD_sales,
+
+
 
 
 --invoice Header
@@ -67,7 +110,7 @@ case when i.invoice_header_type = 'credit note' then -ii.quantity else ii.quanti
 li.proof_of_delivery_id as proof_of_delivery_id_line,
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp 
 
 from {{ ref('stg_invoice_items') }} as ii
 left join {{ ref('stg_invoices') }} as i on ii.invoice_header_id = i.invoice_header_id

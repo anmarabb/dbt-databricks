@@ -8,7 +8,7 @@ With source as (
  
  li.order_number,
 
- count(li.line_item_id) as number_of_items, --number of items in a single order
+ count(li.line_item_id) as number_of_items --number of items in a single order
  
  from {{ ref('stg_line_items') }} as li
  group by li.order_number
@@ -17,7 +17,7 @@ select
 
 *,
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

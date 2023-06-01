@@ -34,7 +34,7 @@ select
         
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp 
 
 
 from {{ref('int_product_incidents')}} as pi 
