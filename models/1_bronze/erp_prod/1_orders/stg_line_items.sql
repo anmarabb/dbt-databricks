@@ -132,7 +132,7 @@ WITH
             regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
             regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory
            
-           from {{ source('1_source', 'line_items') }} as li
+           from {{ source('erp', 'line_items') }} as li
 
         
     )

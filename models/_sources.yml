@@ -1,7 +1,7 @@
 version: 2
 sources:
-  - name: 1_source
-    database: prod_erp
+  - name: erp
+    database: fn_sources
     tables:
       - name: users
       - name: user_categories

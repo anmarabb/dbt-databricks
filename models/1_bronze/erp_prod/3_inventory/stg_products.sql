@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('1_source', 'products') }}
+ select * from {{ source('erp', 'products') }}
  where deleted_at is  null
 )
 select 
