@@ -30,17 +30,13 @@ models:
     1_staging:
       +enabled: true
       +materialized: view
-      +schema: stg
+      +schema: 2_stage
        
-    2_intermediate:
-        +enabled: true
-        +materialized: table
-        +schema: int
 
-    3_warehouse:
+    2_mart:
       +enabled: true
       +materialized: table
-      +schema: dwh
+      +schema: 3_mart
       dim_date:
         +materialized: view
 
