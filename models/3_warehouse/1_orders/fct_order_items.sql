@@ -173,7 +173,7 @@ incident_quantity,
 
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp
 
 
 from {{ref('int_line_items')}} as li 

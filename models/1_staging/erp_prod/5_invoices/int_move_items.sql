@@ -26,7 +26,7 @@ customer.user_category,
     -(moi.balance - moi.residual) as reconciled_amount,
     -moi.residual as un_reconciled_amount,
 
-    current_timestamp() as insertion_timestamp, 
+    current_timestamp() as insertion_timestamp
 
 from {{ ref('stg_move_items')}} as moi
 left join {{ ref('base_users') }} as customer on customer.id = moi.user_id

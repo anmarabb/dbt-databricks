@@ -6,7 +6,7 @@ source as (
  
 select 
 li.order_number,
-sum(incidents_count) as total_order_incidents_count,
+sum(incidents_count) as total_order_incidents_count
 
 
 

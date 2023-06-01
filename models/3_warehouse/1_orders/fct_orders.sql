@@ -32,7 +32,7 @@ count(line_item_id) as items_count,
 
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp 
 
 
 from {{ref('int_line_items')}} as li 

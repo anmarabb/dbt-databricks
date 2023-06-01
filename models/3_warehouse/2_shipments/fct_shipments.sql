@@ -79,7 +79,7 @@ select
 
 
 
-case when arrival_at is null and master_shipments_status in ('DRAFT','CANCELED', 'PACKED') then 'Not Arrived' else 'Arrived' end as arrival_status,
+case when arrival_at is null and master_shipments_status in ('DRAFT','CANCELED', 'PACKED') then 'Not Arrived' else 'Arrived' end as arrival_status
 
 from {{ref('int_shipments')}} as sh 
 )

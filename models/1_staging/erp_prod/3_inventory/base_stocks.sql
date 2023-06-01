@@ -52,7 +52,7 @@ else 'Reselling'
 end as stock_model,
 
 
-current_timestamp() as ingestion_timestamp,
+current_timestamp() as ingestion_timestamp
  
 
 

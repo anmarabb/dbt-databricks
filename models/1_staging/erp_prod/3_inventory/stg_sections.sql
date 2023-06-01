@@ -10,6 +10,6 @@ checking_status,
 warehouse_checking_status,
 
 created_at,
-updated_at,
+updated_at
 
 from source 

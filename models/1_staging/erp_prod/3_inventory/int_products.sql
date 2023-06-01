@@ -7,7 +7,7 @@ with CTE as
                 p.product_id,
                     count(*) as incidents_count,
                     sum(pi.quantity) as incidents_quantity,
-                    sum(case when incident_type ='DAMAGED' then pi.quantity else 0 end) as damaged_quantity,
+                    sum(case when incident_type ='DAMAGED' then pi.quantity else 0 end) as damaged_quantity
                     from {{ ref('stg_product_incidents')}}  as pi 
                     left join {{ ref('stg_line_items')}}  as li on  pi.line_item_id = li.line_item_id
                     left join {{ ref('stg_products')}}  as p on  p.line_item_id = li.line_item_id and p.product_id is not null
@@ -19,7 +19,7 @@ with CTE as
                 select
                     p.product_id,
                     count(li.line_item_id) as item_sold,
-                    sum(li.quantity) as sold_quantity,         
+                    sum(li.quantity) as sold_quantity        
                     from {{ ref('stg_line_items')}} as li
                     left join {{ ref('stg_products')}} as p on p.line_item_id = li.parent_line_item_id
                 group by 1
@@ -87,20 +87,24 @@ with CTE as
             li.shipments_status,
             li.master_shipments_status,
             
+           
+
             case 
-            when date_diff(date(case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.order_date) else li.delivery_date end)  ,current_date(), month) > 1 then 'Wrong date' 
+            when months_between(current_date(), date(case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.order_date) else li.delivery_date end)) > 1 then 'Wrong date' 
             when case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.order_date) else li.delivery_date end > current_date() then "Future" 
             when case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.order_date) else li.delivery_date end = current_date() then "Today" 
             when case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.order_date) else li.delivery_date end < current_date() then "Past" 
             else "cheak" end as select_delivery_date,
 
-          
+
+
             case 
-            when date_diff(date(case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null  then date(p.created_at) else p.departure_date end)  ,current_date(), month) > 1 then 'Wrong date' 
-            when case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null  then date(p.created_at) else p.departure_date end > current_date() then "Future" 
-            when case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null  then date(p.created_at) else p.departure_date end = current_date() then "Today" 
-            when case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null  then date(p.created_at) else p.departure_date end < current_date() then "Past" 
+            when months_between(current_date(), date(case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null then date(p.created_at) else p.departure_date end)) > 1 then 'Wrong date' 
+            when case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null then date(p.created_at) else p.departure_date end > current_date() then "Future" 
+            when case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null then date(p.created_at) else p.departure_date end = current_date() then "Today" 
+            when case when li.order_type = 'IMPORT_INVENTORY' and p.departure_date is null then date(p.created_at) else p.departure_date end < current_date() then "Past" 
             else "cheak" end as select_departure_date,
+
 
 
 
@@ -129,7 +133,8 @@ with CTE as
         case when li.fulfillment_status = '2. Fulfilled - with Full Item Incident' and  incidents_quantity != p.quantity then 'red_flag' else null end as full_incident_check,
 
         case when COUNT(*) over (partition by p.product_id)>1 then 'multi-location' else null end as multi_location,
-        row_number() over (partition by p.product_id) as row_number,
+        row_number() over (partition by p.product_id ORDER BY p.created_at ASC) as row_number
+
             
         from {{ ref('stg_products')}} as p
         left join {{ ref('base_stocks')}} as st on p.stock_id = st.stock_id and p.reseller_id = st.reseller_id

@@ -3,7 +3,7 @@
 select 
 proof_of_delivery_id,
 count (*) as item_count ,
-min(created_at) as order_date,
+min(created_at) as order_date
 from {{ ref('stg_line_items') }}
 group by proof_of_delivery_id
  ),
@@ -13,7 +13,7 @@ group by proof_of_delivery_id
 (
 select 
 proof_of_delivery_id,
-count (invoice_header_id) as invoice_count,
+count (invoice_header_id) as invoice_count
 from {{ ref('stg_invoices') }}
 --where proof_of_delivery_id is not null
 group by proof_of_delivery_id
@@ -26,7 +26,7 @@ pod.proof_of_delivery_id,
 pod.delivery_date,
 pod.created_at as order_date,
 pod.source_type,
-pod.ids_count,
+--pod.ids_count,
 pod.pod_status,
 
 
@@ -49,7 +49,7 @@ i.invoice_count,
 date.dim_date,
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp
 
  from {{ ref('stg_proof_of_deliveries') }} as pod
  

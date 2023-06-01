@@ -63,7 +63,7 @@ select
 
 
                 --dim
-                creation_condition,
+                --creation_condition,
                 language,
                 number,
                 currency,

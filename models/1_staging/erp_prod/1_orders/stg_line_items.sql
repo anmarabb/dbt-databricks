@@ -72,10 +72,9 @@ WITH
             li.categorization,
             li.stem_length,
             li.color,
-            --li.pn['p1'] AS spec_1,
-            --li.pn['p2'] AS spec_2,
-            --li.pn['p3'] AS spec_3,
-            --li.pn['p4'] AS spec_4,
+            get_json_object(pn, '$.p1') AS spec_1,
+            get_json_object(pn, '$.p2') AS spec_2,
+            get_json_object(pn, '$.p3') AS spec_3,
             li.unit_landed_cost,
             li.unit_fob_price,
             li.unit_price,
@@ -100,6 +99,35 @@ WITH
             li.splitted_quantity,
             li.warehoused_quantity,
             li.published_canceled_quantity,
+
+
+        case 
+            when li.source_line_item_id is null and li.parent_line_item_id is null and li.ordering_stock_type is null and li.reseller_id is not null then 'Reseller Purchase Order' --from reseller to feed the stock
+            when li.source_line_item_id is null and li.parent_line_item_id is null and li.ordering_stock_type is null and li.reseller_id is null and li.pricing_type in ('FOB','CIF') then 'Customer Bulk Order'
+            when li.source_line_item_id is null and li.parent_line_item_id is null and li.ordering_stock_type is null and li.reseller_id is null then 'Customer Shipment Order' --customer_direct_orders
+            when li.source_line_item_id is null and li.ordering_stock_type = 'INVENTORY' and li.reseller_id is null and li.order_type = 'IN_SHOP' then 'Customer In Shop Order'
+            when li.source_line_item_id is null and li.ordering_stock_type = 'INVENTORY' and li.reseller_id is null then 'Customer Inventory Order' --customer_inventory_orders
+            when li.source_line_item_id is null and li.ordering_stock_type = 'FLYING' and li.reseller_id is null then 'Customer Fly Order' --customer_inventory_orders_flying
+            when li.source_line_item_id is null and li.ordering_stock_type is not null and li.reseller_id is not null then 'stock2stock'
+            when li.source_line_item_id is not null and li.order_type = 'EXTRA' then 'EXTRA'
+            when li.source_line_item_id is not null and li.order_type = 'RETURN' then 'RETURN' 
+            when li.source_line_item_id is not null and li.order_type = 'MOVEMENT' then 'MOVEMENT'
+            else 'cheack_my_logic'
+            end as record_type_details,
+
+        case 
+            when li.source_line_item_id is null and li.parent_line_item_id is null and li.ordering_stock_type is null and li.reseller_id is not null then 'Purchase Order'
+            when li.source_line_item_id is null and li.parent_line_item_id is null and li.ordering_stock_type is null and li.reseller_id is null and li.pricing_type in ('FOB','CIF') then 'Customer Order'
+            when li.source_line_item_id is null and li.parent_line_item_id is null and li.ordering_stock_type is null and li.reseller_id is null then 'Customer Order' --customer_direct_orders
+            when li.source_line_item_id is null and li.ordering_stock_type is not null and li.reseller_id is null then 'Customer Order' --customer_inventory_orders
+            when li.source_line_item_id is null and li.ordering_stock_type is not null and li.reseller_id is not null then 'System'
+            when li.source_line_item_id is not null and li.order_type = 'EXTRA' then 'System'
+            when li.source_line_item_id is not null and li.order_type = 'RETURN' then 'System' 
+            when li.source_line_item_id is not null and li.order_type = 'MOVEMENT' then 'System'
+            else 'cheack_my_logic'
+            end as record_type,
+
+
             regexp_extract(permalink, r'/([^/]+)') as product_crop,
             regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
             regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory

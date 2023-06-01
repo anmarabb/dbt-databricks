@@ -75,7 +75,7 @@ select
 
 
 
-current_timestamp() as insertion_timestamp, 
+current_timestamp() as insertion_timestamp 
 
 
 from {{ref('int_invoice_items')}} as ii 

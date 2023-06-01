@@ -23,7 +23,7 @@ select
             else 'cheak'
             end as Accountable,
 
-        current_timestamp() as insertion_timestamp,
+        current_timestamp() as insertion_timestamp
 
 from {{ ref('stg_product_incidents')}} as pi
 left join {{ref('int_line_items')}} as li on pi.line_item_id = li.line_item_id

@@ -14,11 +14,13 @@ select
             --date
                 created_at,
                 updated_at,
-                departure_date,
+               departure_date,
                 canceled_at,
                 deleted_at,
-                arrival_time as arrival_at, --i think this is when the team click the open butomn
-                case when origin in ('CO','NL') then departure_date + 1 else departure_date  end as arrival_date,
+                CASE WHEN origin IN ('CO', 'NL') THEN date_add(departure_date, 1) ELSE departure_date END AS arrival_date,
+                CASE WHEN YEAR(arrival_time) <> 202213 THEN arrival_time ELSE NULL END AS arrival_at,
+
+
 
 
                 
@@ -62,7 +64,7 @@ select
 
 
 
-current_timestamp() as ingestion_timestamp, 
+current_timestamp() as ingestion_timestamp
 
 
 

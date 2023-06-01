@@ -14,7 +14,7 @@ select
     u.user_category,
     u.account_manager,
 
-    current_timestamp() as insertion_timestamp, 
+    current_timestamp() as insertion_timestamp 
 
 from {{ ref('base_users')}} as u
 
