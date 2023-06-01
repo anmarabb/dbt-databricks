@@ -28,10 +28,21 @@ models:
   floranow:
     # Applies to all files under models/example/
     1_bronze:
-      +enabled: true
-      +materialized: view
-      +schema: "{{ env_var('DBT_BRONZE') }}"
-       
+      erp_prod:
+        +enabled: true
+        +materialized: view
+        +schema: "erp_{{ env_var('DBT_BRONZE') }}"
+
+      marketplace_prod:
+        +enabled: true
+        +materialized: view
+        +schema: "mkp_{{ env_var('DBT_BRONZE') }}"
+
+      vendor_portal_prod:
+        +enabled: true
+        +materialized: view
+        +schema: "vp_{{ env_var('DBT_BRONZE') }}"
+
 
     2_silver:
       +enabled: true
