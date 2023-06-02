@@ -37,7 +37,7 @@ models:
     2_silver:
       +enabled: true
       +materialized: table
-      +schema:  "{{ env_var('DBT_SILVER') }}"
+      +schema:  erp_"{{ env_var('DBT_SILVER') }}"
       dim_date:
         +materialized: view
 
