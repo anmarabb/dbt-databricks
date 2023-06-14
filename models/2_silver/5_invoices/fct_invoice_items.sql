@@ -16,9 +16,6 @@ select
         YTD_sales,
         LYTD_sales,
         
-        
-         
-        
         price_without_tax,
         price,
         total_tax,

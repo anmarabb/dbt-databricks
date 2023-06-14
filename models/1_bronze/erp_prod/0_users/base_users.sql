@@ -5,29 +5,105 @@ with
 
 
 select
+            --PK
+                u.id,
 
-    u.id,
-    u.name,
-    u.debtor_number,
-    u.warehouse_id,
-    w.warehouse_name as warehouse,
+            --FK
+                u.warehouse_id,
+                u.parent_id,
+                u.user_reference_id,
+                u.payment_term_id,
+                u.master_id,
+                u.route_id,
+                u.company_id,
+                u.user_category_id,
+                u.financial_administration_id,
+                u.netsuite_ref_id,
+                u.credit_note_template_id,
+                u.invoice_template_id,
+                u.statement_template_id,
+                u.payment_receipt_template_ar_id,
+                u.statement_template_ar_id,
+                u.creditable_invoice_template_id,
+                u.invoice_template_ar_id,
+                u.payment_receipt_template_id,
+                u.credit_note_template_ar_id,
+                u.creditable_invoice_template_ar_id,
+                u.bank_account_id,
+                u.ledger_template_id,
+                u.ledger_template_ar_id,
 
- case
-    when u.customer_type = 0 then 'reseller'
-    when u.customer_type = 1 then 'retail'
-    when u.customer_type = 2 then 'fob'
-    when u.customer_type = 3 then 'cif'
-    else 'check_my_logic'
-  end as customer_type,
-  
-  INITCAP(u.city) as city,
-  
-  case when u.internal is true then 'Internal' else 'External' end as account_type,
 
-  
-  
-  
-  
+            --dim
+                
+                
+                case when u.internal is true then 'Internal' else 'External' end as account_type,
+                case when u.customer_type = 0 then 'reseller' when u.customer_type = 1 then 'retail' when u.customer_type = 2 then 'fob' when u.customer_type = 3 then 'cif' else 'check_my_logic' end as customer_type,
+                
+
+                --BOOLEAN
+                    u.order_block,
+                    u.internal,
+                    u.has_all_warehouses_access,
+                    u.has_trade_access,
+                    u.allow_due_invoices,
+                    u.customized_invoice,
+                    u.with_stamp,
+                    
+                    
+
+
+
+
+
+                --STRING
+                    u.name,
+                    u.debtor_number,
+                    u.email,
+                    u.street_address,
+                    u.phone_number,
+                    u.username,
+                    u.accessible_warehouses,
+                    u.odoo_code,
+                    u.statement_type,
+
+                    INITCAP(u.city) as city,
+                    u.state,
+                    u.country as row_country,
+
+                    u.longitude,
+                    u.latitude,
+                    u.business_name,
+                    u.arabic_name,
+                    u.vat_number,
+                    u.language,
+                    u.accessible_internal_stocks,
+                    u.netsuite_failure_reason,
+                    u.lpo_number,
+                    u.commercial_register,
+
+
+
+
+            --date
+                u.created_at,
+                u.updated_at,
+                u.deleted_at,
+
+            --fct
+                u.remaining_credit,
+                u.credit_limit,
+                u.debit_balance,
+                u.credit_balance,
+                u.pending_balance,
+                --u.pending_order_requests_balance,
+                --u.credit_note_balance,
+                --u.advance_balance,
+    
+
+
+
+  w.warehouse_name as warehouse,
   u2.name as account_manager,
   uc.name as user_category,
   c.country_name as country,
