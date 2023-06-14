@@ -11,6 +11,8 @@ select
         customer.name as Customer,
         customer.customer_type,
         customer.user_category,
+        customer.debtor_number,
+        customer.account_manager,
 
 
 
@@ -91,12 +93,17 @@ END AS LYTD_sales,
 
 --Line Items
 
-        li.Supplier,
+        li.Supplier as line_item_supplier,
         li.fulfillment_mode,
         li.order_status,
         li.record_type_details,
         li.ordered_quantity,
         li.fulfilled_quantity,
+
+
+--stitch
+
+        case when li.Supplier is null then meta_supplier else li.Supplier end as Supplier,
 
 
 

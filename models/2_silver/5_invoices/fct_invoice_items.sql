@@ -21,6 +21,7 @@ select
         
         price_without_tax,
         price,
+        total_tax,
 
         invoiced_quantity,
 
@@ -32,9 +33,15 @@ select
         invoice_item_type,
         invoice_item_status,
         Customer,
+        debtor_number,
+        account_manager,
         customer_type,
         user_category,
         product_name as Product,
+
+        meta_supplier_name,
+        meta_supplier_code,
+        meta_supplier,
         
      --date
         order_date,
@@ -48,9 +55,10 @@ select
 
     --dim
         line_item_id,
-        Supplier,
+        
         fulfillment_mode,
         order_status,
+        line_item_supplier,
 
     --fct
         ordered_quantity,
@@ -73,6 +81,9 @@ select
         invoice_header_created_at,
         invoice_header_printed_at,
 
+
+--stitsh
+    Supplier,
 
 
 current_timestamp() as insertion_timestamp 

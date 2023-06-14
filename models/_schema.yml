@@ -1,34 +1,5 @@
 version: 2
 models:
-  - name: stg_line_items
-    description: "A table of all page views on Lightdash webpages."
-    columns:
-      - name: delivery_date
-        description: --
-      - name: departure_date
-        description: --
-      - name: completed_at
-        description: --
-
-
-      - name: quantity
-        description: --
-      - name: unit_fob_price
-        description: --
-      - name: unit_landed_cost
-        description: --
-      - name: total_price_without_tax
-        description: --
-
-        
-      - name: fulfillment
-        description: SUCCEED (Set on fulfilling, when adding the full quantity to location or proof of delivery), PARTIAL (Set on fulfilling, when adding the part of the quantity to location or proof of delivery), FAILED (Set on fulfilling, when full quantity is missing),UNACCOUNTED (Set on placing order till receiving)
-      - name: supplier_id
-        description: --
-      - name: customer_id
-        description: The ID of the customer. This column is a foreign key reference to the customer_id column in the dim_customer table.
-  
-  
   - name: fct_order_items
     description: "A table of all page views on Lightdash webpages."
     columns:
@@ -61,3 +32,15 @@ models:
      
 
 
+  - name: fct_invoice_items
+    description: "A table of all page views on Lightdash webpages."
+    columns:
+      - name: price_without_tax
+      - name: invoiced_quantity
+      - name: financial_administration
+      - name: invoice_item_type
+      - name: Customer
+      - name: account_manager
+      - name: Product
+      - name: order_date
+        
