@@ -71,16 +71,6 @@ select
                     u.state,
                     u.country as row_country,
 
-                    u.longitude,
-                    u.latitude,
-                    u.business_name,
-                    u.arabic_name,
-                    u.vat_number,
-                    u.language,
-                    u.accessible_internal_stocks,
-                    u.netsuite_failure_reason,
-                    u.lpo_number,
-                    u.commercial_register,
 
 
 
