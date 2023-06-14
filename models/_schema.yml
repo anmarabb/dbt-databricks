@@ -38,8 +38,8 @@ models:
       - name: invoice_item_id
         meta:
           metrics:
-          total_invoice_count:
-           type: count_distinct
+            total_invoice_count:
+              type: count_distinct
 
       - name: invoiced_quantity
       - name: price_without_tax
