@@ -56,7 +56,7 @@ models:
         description: "The total sales for the current month to date."
         meta:
           metrics:
-            total sales for the current month to date:
+            Month To Date Sales:
               type: sum
 
       - name: LMTD_sales
