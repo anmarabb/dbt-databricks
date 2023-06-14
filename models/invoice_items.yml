@@ -23,6 +23,12 @@ models:
 
       - name: MTD_sales
         description: "The total sales for the current month to date."
+        meta:
+          metrics:
+            MTD_sales:
+              type: sum
+
+
       - name: LMTD_sales
         description: "The total sales for the same period in the last month (Last Month to Date)."
       - name: MTD_sales_last_year
