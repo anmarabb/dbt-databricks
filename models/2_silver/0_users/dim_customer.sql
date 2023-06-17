@@ -4,7 +4,7 @@ source as (
         
 select     
     u.id as customer_id,
-    u.name,
+    u.name as Customer,
 
     u.city,
     u.state,

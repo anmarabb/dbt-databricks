@@ -76,4 +76,19 @@ models:
 
 
 
-
+  - name: dim_customer
+    description: "This is a customer dimension table that holds comprehensive information about Floranow's customers. It serves as a reference point for customer-related data, enabling a detailed analysis of customer behavior and engagement with the platform."
+    columns:
+      - name: customer_id
+      - name: Customer
+      - name: city
+      - name: state
+      - name: country
+      - name: debtor_number
+      - name: account_type
+      - name: customer_type
+      - name: financial_administration
+      - name: company_name
+      - name: warehouse
+      - name: payment_term
+      - name: created_at

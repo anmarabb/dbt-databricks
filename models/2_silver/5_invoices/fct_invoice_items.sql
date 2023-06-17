@@ -31,6 +31,7 @@ select
         invoice_item_status,
         Customer,
         debtor_number,
+        company_name,
         account_manager,
         customer_type,
         user_category,
@@ -53,13 +54,15 @@ select
     --dim
         line_item_id,
         
-        fulfillment_mode,
-        order_status,
+        fulfillment_mode, --Inventory Orders (Stock-out), Shipment Orders
+        order_status, ----Dispatched, Fulfilled Full Incident, Fulfilled Not Dispatched, Dispatched, Fulfilled Not Dispatched
+
         line_item_supplier,
 
     --fct
         ordered_quantity,
         fulfilled_quantity,
+
 
 
 
@@ -70,8 +73,10 @@ select
         invoice_header_status, --draft, open, printed, signed, closed, canceled, rejected, voided
         invoice_header_type, --credit note, invoice
         generation_type,
-        record_type,
-        record_type_details,
+        record_type, --Invoice - MANUAL, Credit Note - MANUAL, Invoice - MANUAL
+        record_type_details, --Customer Fly Order, Customer Inventory Order, Customer Shipment Order
+
+
 
 
     --date
@@ -81,6 +86,7 @@ select
 
 --stitsh
     Supplier,
+    Origin,
 
 
 current_timestamp() as insertion_timestamp 

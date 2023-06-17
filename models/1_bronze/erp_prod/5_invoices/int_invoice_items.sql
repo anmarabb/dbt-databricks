@@ -13,6 +13,8 @@ select
         customer.user_category,
         customer.debtor_number,
         customer.account_manager,
+        customer.company_name,
+
 
 
 
@@ -104,6 +106,7 @@ END AS LYTD_sales,
 --stitch
 
         case when li.Supplier is null then meta_supplier else li.Supplier end as Supplier,
+        li.Origin,
 
 
 
