@@ -1,8 +1,6 @@
 With source as (
- select * from {{ source('erp', 'products') }}
- where deleted_at is  null
-)
-select 
+ 
+    select 
 
             --PK
                 id as product_id,
@@ -65,24 +63,31 @@ select
 
                 p.remaining_quantity * p.unit_price as remaining_value,
 
-
-concat( "https://erp.floranow.com/products/", p.id) as product_link,
-
-
-        REGEXP_EXTRACT(permalink, r'/([^/]+)') as product_crop , 
-        REGEXP_EXTRACT(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
-        REGEXP_EXTRACT(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory,
+                concat( "https://erp.floranow.com/products/", p.id) as product_link,
 
 
-  --CONCAT('SKU_', LOWER(SUBSTR(MD5(product_name), 1, 8))) AS sku,
-    --CONCAT('SKU_', LOWER(TO_HEX(MD5(product_name)))) AS sku,
+            --REGEXP_EXTRACT(permalink, r'/([^/]+)') as product_crop , 
+            --REGEXP_EXTRACT(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
+            --REGEXP_EXTRACT(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory,
 
 
-current_timestamp() as ingestion_timestamp
+            --CONCAT('SKU_', LOWER(SUBSTR(MD5(product_name), 1, 8))) AS sku,
+            --CONCAT('SKU_', LOWER(TO_HEX(MD5(product_name)))) AS sku,
+
+            --EXPLODE(FROM_JSON(categorization, 'Array<struct<permalink: string>>')) as permalink_struct
+            FROM_JSON(categorization, 'Array<struct<permalink: string>>')[0].permalink as permalink
+
+    from {{ source(var('erp_source'), 'products') }} as p
+    where deleted_at is  null
+)
+
+    select 
+    *,
+     REGEXP_EXTRACT(permalink, r'/([^/]+)') as product_crop , 
+     REGEXP_EXTRACT(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
+     REGEXP_EXTRACT(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory,
+    current_timestamp() as ingestion_timestamp
  
-
-
-
 
 from source as p
 

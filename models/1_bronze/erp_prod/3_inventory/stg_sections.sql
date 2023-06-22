@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp', 'sections') }}
+ select * from {{ source(var('erp_source'), 'sections') }}
 )
 select 
 

@@ -4,61 +4,43 @@ prep_product_locations as (select  pl.locationable_id, max(pl.product_location_i
 prep_picking_products as (select  pk.line_item_id, max(pk.picking_product_id) as picking_product_id from {{ ref('stg_picking_products') }} as pk group by 1)
 
 SELECT
-li.* EXCEPT(order_type,delivery_date, quantity),
+
+--line_items
+    li.* EXCEPT(order_type,delivery_date, quantity),
+    li.quantity as ordered_quantity,
+    case when li.order_type = 'OFFLINE' and orr.standing_order_id is not null then 'STANDING' else li.order_type end as order_type,
+    case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.created_at) else li.delivery_date end as delivery_date,
 
 
-li.quantity as ordered_quantity,
+    case when li.record_type_details in ('Reseller Purchase Order', 'EXTRA') and li.location = 'loc' and pi.incidents_count is  null then 1 else 0 end as Received_not_scanned,
+    --actions
+        --returned_by.name as returned_by,
+        dispatched_by.name as dispatched_by,
+        --created_by.name as created_by,
+        --split_by.name as split_by,
+        --order_requested_by.name as order_requested_by,
 
+    --funnel touchpoints 
+        case when li.received_quantity > 0 then 1 else 0 end as order_received,
+        case when li.fulfilled_quantity > 0 then 1 else 0 end as order_fulfilled,
+        case when li.location = 'pod' then 1 else 0 end as order_pod_moved,
+        case when li.dispatched_at is not null then 1 else 0 end as order_dispatched,
+        case when li.state = 'DELIVERED' then 1 else 0 end as order_delivered,
+        case when li.invoice_id is not null then 1 else 0 end as invoice_created,
+        case when li.invoice_id is not null and i.invoice_header_printed_at is not null then 1 else 0 end as invoice_printed,
+        case when li.location = 'loc' then 1 else 0 end as order_loc_moved, --order_warehoused
+        case when li.picked_quantity > 0 then 1 else 0 end as order_picked,
 
-
-case when li.order_type = 'OFFLINE' and orr.standing_order_id is not null then 'STANDING' else li.order_type end as order_type,
-case when li.delivery_date is null and li.order_type in ('IMPORT_INVENTORY', 'EXTRA','MOVEMENT') then date(li.created_at) else li.delivery_date end as delivery_date,
-
-case when li.record_type_details in ('Reseller Purchase Order', 'EXTRA') and li.location = 'loc' and pi.incidents_count is  null then 1 else 0 end as Received_not_scanned,
-
---actions
-    --returned_by.name as returned_by,
-    dispatched_by.name as dispatched_by,
-    --created_by.name as created_by,
-    --split_by.name as split_by,
-    --order_requested_by.name as order_requested_by,
-
-
-
-
---funnel touchpoints 
-    case when li.received_quantity > 0 then 1 else 0 end as order_received,
-    case when li.fulfilled_quantity > 0 then 1 else 0 end as order_fulfilled,
-    case when li.location = 'pod' then 1 else 0 end as order_pod_moved,
-    case when li.dispatched_at is not null then 1 else 0 end as order_dispatched,
-    case when li.state = 'DELIVERED' then 1 else 0 end as order_delivered,
-    case when li.invoice_id is not null then 1 else 0 end as invoice_created,
-    case when li.invoice_id is not null and i.invoice_header_printed_at is not null then 1 else 0 end as invoice_printed,
-
-
-    case when li.location = 'loc' then 1 else 0 end as order_loc_moved, --order_warehoused
-    case when li.picked_quantity > 0 then 1 else 0 end as order_picked,
-
-
-
-
-
---date
-    date.dim_date,
-    
-
-
---customer
-    user.name as user,
-    customer.name as customer,
-    customer.country,
-    customer.financial_administration,
-    customer.account_manager,
-    customer.debtor_number,
-    customer.customer_type,
+    --customer
+        user.name as user,
+        customer.name as customer,
+        customer.country,
+        customer.financial_administration,
+        customer.account_manager,
+        customer.debtor_number,
+        customer.customer_type,
 
     case when customer.debtor_number in ('WANDE','95110') then 'Internal Invoicing' else 'Normal Invoicing' end as internal_invoicing,
-
     case when li.received_quantity > 0 then 'Received' else 'Not Received' end as ops_status1,
     case when li.state in ('PENDING','CANCELED') then 'Not Fulfilled' else 'Fulfilled' end as ops_status2,
     case when li.location = 'pod' then 'Prepared' else 'Not Prepared' end as ops_status3,
@@ -142,63 +124,6 @@ case
     when li.delivery_date < current_date() then "Past" 
     else "cheak" 
 end as select_delivery_date
-
-
-/*
-
---p.product_id,
---pp.product_id as pp_product_id,
---li.parent_line_item_id,
---lis.supplier_name as lis_supplier_name,
---plis.supplier_name as plis_supplier_name,
-
-
-prep_ploc.id as product_locations_id,
-prep_picking_products.id as picking_products_id,
-
-
-
-
-li.order_type as row_order_type,
-*/
-
-
-
-
-
-
-
-
-/*
-{% set  x = ['missing_quantity', 'delivered_quantity','inventory_quantity','warehoused_quantity','picked_quantity','fulfilled_quantity','received_quantity','quantity','returned_quantity','splitted_quantity','replaced_quantity','extra_quantity','damaged_quantity','published_canceled_quantity'] %}
-{% for x in x %}
-case 
-    when li.{{x}} > 0 then '{{x}}'
-    when li.{{x}} = 0 then '--'
-end as ch_{{x}}
-        {%- if not loop. last -%}
-        ,
-        {%- endif -%}
-        {% endfor -%},
-
-
-{% set  x = ['updated_at', 'created_at','completed_at','departure_date','delivery_date','deleted_at','split_at','canceled_at','delivered_at','dispatched_at','returned_at','order_id','offer_id','root_shipment_id','shipment_id','source_shipment_id','split_source_id','replace_for_id','feed_source_id','customer_master_id','customer_id','user_id','reseller_id','supplier_id','created_by_id','split_by_id','returned_by_id','canceled_by_id','dispatched_by_id','supplier_product_id','order_request_id','order_payload_id','source_invoice_id','invoice_id','proof_of_delivery_id','parent_line_item_id','source_line_item_id','line_item_id','sequence_number','number','variety_mask','product_mask','barcode','previous_moved_proof_of_deliveries','previous_split_proof_of_deliveries','previous_shipments'] %}
-{% for x in x %}
-case 
-    when li.{{x}} is not null then '{{x}}'
-    when li.{{x}} is null then '--'
-end as ch_{{x}}
-        {%- if not loop. last -%}
-        ,
-        {%- endif -%}
-        {% endfor -%},  
-*/
-
-
---Metreics
-   -- count (distinct li.order_number ) as orders,
-   -- count (distinct li.line_item_id ) as line_orders,
-
 
 
 

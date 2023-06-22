@@ -1,7 +1,7 @@
 WITH source AS (
   SELECT *,
          from_json(marketplace_request, 'user_id STRING, customer_id STRING, order_type STRING, tags ARRAY<STRING>, offer_id STRING') AS marketplace_request_parsed
-  FROM {{ source('erp', 'order_payloads') }}
+  FROM {{ source(var('erp_source'), 'order_payloads') }}
 )
 SELECT 
   id AS order_payload_id,

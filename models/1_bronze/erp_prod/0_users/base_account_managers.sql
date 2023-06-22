@@ -3,9 +3,9 @@ WITH source AS (
     a.account_manager_type,
     u.name AS account_manager,
     f.name AS fin_market
-  FROM {{ source('erp', 'account_managers') }} AS a
-  LEFT JOIN {{ source('erp', 'users') }} AS u ON a.user_id = u.id
-  LEFT JOIN {{ source('erp', 'financial_administrations') }} AS f ON f.id = u.financial_administration_id
+  FROM {{ source(var('erp_source'), 'account_managers') }} AS a
+  LEFT JOIN {{ source(var('erp_source'), 'users') }} AS u ON a.user_id = u.id
+  LEFT JOIN {{ source(var('erp_source'), 'financial_administrations') }} AS f ON f.id = u.financial_administration_id
 )
 SELECT 
   *,

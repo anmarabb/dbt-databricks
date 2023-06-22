@@ -5,6 +5,8 @@ source as (
  
 select 
 
+
+order_id, 
 --actions
     dispatched_by,
 
@@ -119,7 +121,6 @@ internal_invoicing,
     dispatched_at,
     created_at as order_date,
     select_delivery_date,
-    dim_date,
 
 
 --Customer

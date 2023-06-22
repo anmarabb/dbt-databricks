@@ -1,5 +1,5 @@
 With source as (
- select * from {{ source('erp', 'move_items') }}
+ select * from {{ source(var('erp_source'), 'move_items') }}
 )
 select 
             --PK

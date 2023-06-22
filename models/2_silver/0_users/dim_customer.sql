@@ -29,9 +29,9 @@ select
     u.statement_type,
 
     accessible_warehouses,
-    commercial_register,
-    lpo_number,
-    accessible_internal_stocks,
+    --commercial_register,
+    --lpo_number,
+    --accessible_internal_stocks,
     order_block,
     u.has_all_warehouses_access,
     u.has_trade_access,

@@ -2,9 +2,9 @@ WITH
     source AS
     (
         SELECT
-            -- PK
+        -- PK
             li.id AS line_item_id,
-            -- FK
+         -- FK
             li.invoice_id,
             li.order_id,
             li.order_payload_id,
@@ -31,19 +31,22 @@ WITH
             li.split_by_id,
             li.replace_for_id,
             li.source_invoice_id,
-            -- dim
+
+            
+         -- dim
             -- date
-            li.departure_date,
-            li.delivery_date,
-            li.created_at,
-            li.completed_at,
-            li.dispatched_at,
-            li.delivered_at,
-            li.deleted_at,
-            li.canceled_at,
-            li.split_at,
-            li.returned_at,
-            li.updated_at,
+                li.departure_date,
+                li.delivery_date,
+                li.created_at,
+                li.completed_at,
+                li.dispatched_at,
+                li.delivered_at,
+                li.deleted_at,
+                li.canceled_at,
+                li.split_at,
+                li.returned_at,
+                li.updated_at,
+
             li.fulfillment,
             li.location,
             li.state,
@@ -75,15 +78,21 @@ WITH
             get_json_object(pn, '$.p1') AS spec_1,
             get_json_object(pn, '$.p2') AS spec_2,
             get_json_object(pn, '$.p3') AS spec_3,
+
+        --fct
             li.unit_landed_cost,
             li.unit_fob_price,
             li.unit_price,
+            li.unit_shipment_cost,
+            li.unit_additional_cost,
+
+
             li.exchange_rate,
             li.total_price_without_tax,
             li.total_price_include_tax,
             li.total_tax,
-            li.unit_shipment_cost,
-            li.unit_additional_cost,
+
+
             li.quantity,
             li.fulfilled_quantity,
             li.received_quantity,
@@ -127,17 +136,22 @@ WITH
             else 'cheack_my_logic'
             end as record_type,
 
+            FROM_JSON(li.categorization, 'Array<struct<permalink: string>>')[0].permalink as permalink
 
-            regexp_extract(permalink, r'/([^/]+)') as product_crop,
-            regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
-            regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory
+            --EXPLODE(FROM_JSON(li.categorization, 'Array<struct<permalink: string>>')) as permalink_struct
+            --regexp_extract(permalink, r'/([^/]+)') as product_crop,
+            --regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
+            --regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory
            
-           from {{ source('erp', 'line_items') }} as li
+           from {{ source(var('erp_source'), 'line_items') }} as li
 
         
     )
 
 SELECT
     *,
+     regexp_extract(permalink, r'/([^/]+)') as product_crop,
+     regexp_extract(permalink, r'/(?:[^/]+)/([^/]+)') as product_category,
+     regexp_extract(permalink, r'/(?:[^/]+/){2}([^/]+)') as product_subcategory,
     current_timestamp AS ingestion_timestamp
 FROM source AS li
