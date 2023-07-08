@@ -28,6 +28,8 @@ shipments_suppliers.account_manager,
 w.warehouse_name as warehouse,
 w.warehouse_country as Destination,
 
+--w2.warehouse_name as warehouse2,
+
 
 case when msh.arrival_at is not null then 1 else 0 end as shipments_received,
 case when msh.arrival_at is null  then 'shipmnet_not_arrived' else 'shipmnet_arrived' end as shipmnet_arrival,
@@ -51,6 +53,8 @@ CASE
 from {{ ref('stg_shipments') }} as sh
 left join  {{ ref('stg_master_shipments') }} as msh on sh.master_shipment_id = msh.master_shipment_id
 left join  {{ ref('base_warehouses') }} as w on msh.warehouse_id = w.warehouse_id
+--left join  {{ ref('base_warehouses') }} as w2 on sh.warehouse_id = w.warehouse_id
+
 left join  {{ ref('base_suppliers') }} as shipments_suppliers on shipments_suppliers.supplier_id = sh.supplier_id
  
  

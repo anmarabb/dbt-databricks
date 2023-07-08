@@ -173,6 +173,14 @@ incidents_count,
 incident_quantity,
 
 
+Stock,
+stock_model,
+Reseller,
+full_stock_name,
+feed_source_name,
+origin_feed_name,
+publishing_feed_name,
+out_feed_source_name,
 
 current_timestamp() as insertion_timestamp
 

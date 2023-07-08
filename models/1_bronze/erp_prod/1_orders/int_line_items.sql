@@ -100,7 +100,7 @@ SELECT
 --shipments
     sh.shipments_status, 
     sh.Shipment,
-    msh.master_shipments_status,
+    sh.master_shipments_status,
 
 w.warehouse_name as warehouse,
 
@@ -114,7 +114,15 @@ pod.source_type,
 pod.pod_status,
 --pod.dispatched_by,
 
+st.stock_name as Stock,
+st.stock_model,
+reseller.name as Reseller,
+concat(st.stock_id, " - ", st.stock_name, " - ", reseller.name  ) as full_stock_name,
 
+fs.feed_source_name as feed_source_name,
+origin_fs.feed_source_name as origin_feed_name,
+publishing_fs.feed_source_name as publishing_feed_name,
+out_fs.feed_source_name as out_feed_source_name,
 
 
 case 
@@ -153,7 +161,6 @@ left join {{ref('base_suppliers')}} as plis on plis.supplier_id = pli.supplier_i
 left join {{ ref('dim_proof_of_deliveries') }} as pod on li.proof_of_delivery_id = pod.proof_of_delivery_id
 
 left join {{ref('int_shipments')}} as sh on li.shipment_id = sh.shipment_id
-left join  {{ref('stg_master_shipments')}} as msh on sh.master_shipment_id = msh.master_shipment_id
 left join {{ref('stg_invoices')}} as i on li.invoice_id = i.invoice_header_id
 
 left join {{ref('base_stocks')}} as st on p.stock_id = st.stock_id 
@@ -169,7 +176,14 @@ left join {{ref('fct_product_incidents_groupby_order_line')}} as pi on pi.line_i
 left join {{ref('stg_additional_items_reports')}}  as ad on ad.line_item_id=li.line_item_id
 
 left join {{ref('dim_date')}}  as date on date.dim_date = date(li.created_at)
- 
+
+left join {{ ref('base_users')}} as reseller on reseller.id = p.reseller_id
+
+left join {{ ref('stg_feed_sources')}} as origin_fs on p.origin_feed_source_id = origin_fs.feed_source_id 
+left join {{ ref('stg_feed_sources')}} as publishing_fs on p.publishing_feed_source_id = publishing_fs.feed_source_id 
+left join {{ ref('stg_feed_sources')}} as fs on p.feed_source_id = fs.feed_source_id 
+left join {{ ref('stg_feed_sources')}} as out_fs on st.out_feed_source_id = out_fs.feed_source_id 
+
 
 left join prep_product_locations as prep_ploc on prep_ploc.locationable_id = p.product_id 
 left join prep_picking_products as prep_picking_products on prep_picking_products.line_item_id = li.line_item_id

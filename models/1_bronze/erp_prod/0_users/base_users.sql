@@ -100,13 +100,9 @@ select
   pt.name as payment_term,
   f.name as financial_administration,
 
-case 
-when u.company_id = 3 then 'Bloomax Flowers LTD'
-when u.company_id = 2 then 'Global Floral Arabia tr'
-when u.company_id = 1 then 'Flora Express Flower Trading LLC'
-else  'cheack'
-end as company_name,
+
   
+  com.name as company_name,
 current_timestamp() as ingestion_timestamp
 
   from {{ source(var('erp_source'), 'users') }} as u
@@ -118,3 +114,6 @@ current_timestamp() as ingestion_timestamp
   left join {{ source(var('erp_source'), 'payment_terms') }} as pt on pt.id = u.payment_term_id
   left join {{ source(var('erp_source'), 'financial_administrations') }} as f on f.id = u.financial_administration_id
   left join {{ ref('stg_warehouses') }} as w on w.warehouse_id = u.warehouse_id 
+  left join {{ ref('stg_companies') }} as com on com.id = u.company_id 
+
+

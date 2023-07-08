@@ -18,7 +18,7 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "dbt_packages"
 
 vars:
-  erp_source: 'fivetran_erp_public'
+  erp_source: 'erp'
 
 
 # Configuring models

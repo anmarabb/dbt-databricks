@@ -8,19 +8,13 @@ select
     
     --fct
 
-        MTD_sales,
-        LMTD_sales,
-        MTD_sales_last_year,
-        m_1_sales,
-        m_1_sales_last_year,
-        YTD_sales,
-        LYTD_sales,
         
         price_without_tax,
         price,
         total_tax,
 
         invoiced_quantity,
+        invoiced_quantity_adjusted,
 
 
     --dim
@@ -71,7 +65,7 @@ select
     --dim
         invoice_header_id,
         invoice_header_status, --draft, open, printed, signed, closed, canceled, rejected, voided
-        invoice_header_type, --credit note, invoice
+        invoice_header_type, 
         generation_type,
         record_type, --Invoice - MANUAL, Credit Note - MANUAL, Invoice - MANUAL
         record_type_details, --Customer Fly Order, Customer Inventory Order, Customer Shipment Order

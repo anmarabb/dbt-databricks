@@ -37,17 +37,30 @@ with CTE as
             
             p.created_at,
 
-            s.supplier_name as Supplier,
-            s.supplier_region as Origin,
-            fs.feed_source_name as feed_source_name,
-            origin_fs.feed_source_name as origin_feed_name,
-            publishing_fs.feed_source_name as publishing_feed_name,
-            out_fs.feed_source_name as out_feed_source_name,
+            li.Supplier,
+            li.Origin,
+           -- s.supplier_region as Origin,
+           -- s.supplier_name as Supplier,
 
-            st.stock_name as Stock,
-            st.stock_model,
-            reseller.name as Reseller,
-            concat(st.stock_id, " - ", st.stock_name, " - ", reseller.name  ) as full_stock_name,
+
+            --fs.feed_source_name as feed_source_name,
+            --origin_fs.feed_source_name as origin_feed_name,
+            --publishing_fs.feed_source_name as publishing_feed_name,
+            --out_fs.feed_source_name as out_feed_source_name,
+
+            li.feed_source_name,
+            li.origin_feed_name,
+            li.publishing_feed_name,
+            li.out_feed_source_name,
+
+            --st.stock_name as Stock,
+            --st.stock_model,
+            --reseller.name as Reseller,
+            --concat(st.stock_id, " - ", st.stock_name, " - ", reseller.name  ) as full_stock_name,
+            li.Stock,
+            li.stock_model,
+            li.Reseller,
+            li.full_stock_name,
 
             case when p.visible is true then 'Visible' else 'Not Visible' end as Visibility,
             case when p.remaining_quantity > 0 then 'Live Stock'  else 'Total Stock' end as live_stock,
@@ -137,14 +150,7 @@ with CTE as
 
             
         from {{ ref('stg_products')}} as p
-        left join {{ ref('base_stocks')}} as st on p.stock_id = st.stock_id and p.reseller_id = st.reseller_id
         left join {{ ref('fct_order_items')}} as li on p.line_item_id = li.line_item_id
-        left join {{ ref('base_suppliers')}} as s on s.supplier_id = p.supplier_id
-        left join {{ ref('stg_feed_sources')}} as origin_fs on p.origin_feed_source_id = origin_fs.feed_source_id 
-        left join {{ ref('stg_feed_sources')}} as publishing_fs on p.publishing_feed_source_id = publishing_fs.feed_source_id 
-        left join {{ ref('stg_feed_sources')}} as fs on p.feed_source_id = fs.feed_source_id 
-        left join {{ ref('stg_feed_sources')}} as out_fs on st.out_feed_source_id = out_fs.feed_source_id 
-        left join {{ ref('base_users')}} as reseller on reseller.id = p.reseller_id
         left join {{ ref('stg_product_locations')}} as pl on pl.locationable_id = p.product_id and pl.locationable_type = "Product"
         left join line_items_sold as lis on lis.product_id = p.product_id
         left join product_incidents as pi on pi.product_id = p.product_id

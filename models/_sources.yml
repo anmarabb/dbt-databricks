@@ -1,6 +1,6 @@
 version: 2
 sources:
-  - name: fivetran_erp_public
+  - name: erp
     database: fn_sources
     tables:
       - name: users

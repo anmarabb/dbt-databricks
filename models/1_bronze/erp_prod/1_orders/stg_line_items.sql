@@ -5,7 +5,7 @@ WITH
         -- PK
             li.id AS line_item_id,
          -- FK
-            li.invoice_id,
+            li.invoice_id as invoice_header_id,
             li.order_id,
             li.order_payload_id,
             li.order_request_id,

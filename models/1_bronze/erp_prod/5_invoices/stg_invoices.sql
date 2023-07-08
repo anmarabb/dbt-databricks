@@ -61,7 +61,6 @@ select
                 else "check_my_logic"
                 end as invoice_header_status,
 
-
                 --dim
                 --creation_condition,
                 language,
@@ -72,7 +71,7 @@ select
                 when i.invoice_type = 0 then 'invoice'
                 else 'check' end as invoice_header_type,
                 items_collection_method,
-                items_source_type,
+                items_source_type, --Invoice, Invoiceltem
                 generation_type,
                 
 
@@ -94,6 +93,8 @@ end as record_type,
             paid_amount,
             discount_amount,
             price_without_discount,
+
+            total_amount - total_tax as total_amount_without_tax,
 
 
 

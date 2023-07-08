@@ -48,6 +48,7 @@ select
         master_shipment,
         warehouse, --destination
         Destination,
+        --warehouse2,
 
 
     --date
